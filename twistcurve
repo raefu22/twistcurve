@@ -1,0 +1,34 @@
+//initialize
+float amplitude = chf('amplitude');
+float turn = chf('turn');
+float offset = chf('offset');
+
+// normalize vector N and tan
+vector normal = normalize(@N);
+vector tan = v@tan;
+tan = normalize(tan);
+vector pos = cross(normal, tan);
+
+//convert ptnum int to float
+float val = (float) @ptnum;
+
+float npts = float(@numpt);
+
+//twist parameters
+float strength = chramp('twist_strength', @grad);
+float twist_frequency = chramp('twistfrequency', fit(val, 0, npts, 0, 1));
+float change = (val/(@ptnum-1)) * turn * 360 * twist_frequency * strength;
+
+float twist_offset = chramp('twistoffset', @grad);
+change += offset * 360 * twist_offset;
+
+float rad = radians(change);
+
+float twist_amp = chramp('twistamplitude', @grad);
+vector change2 = normal * cos(rad) * amplitude * twist_amp;
+
+pos = pos * amplitude * sin(rad) * twist_amp;
+pos += change2 + @P;
+
+@P = pos;
+@N = cross(normal, tan);
