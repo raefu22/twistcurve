@@ -1,0 +1,4 @@
+// prepare curve for twist by adding normals
+v@N = {0, 1, 0};
+v@utan = cross(normalize(v@tan), @N);
+@N = cross(v@utan, v@tan);
